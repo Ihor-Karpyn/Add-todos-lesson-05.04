@@ -1,0 +1,19 @@
+body {
+  margin-top: 8px;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+  padding-left: 8px;
+}
+
+.error {
+  font-size: 11px;
+  color: red;
+}
+
+iframe {
+  display: none;
+}
