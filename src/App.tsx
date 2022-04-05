@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { Color, FullGood, GoodWithoutColor } from './types';
 
 const colors: Color[] = [
@@ -34,13 +34,33 @@ export const App: FC = React.memo(() => {
   const [selectedColorId, setSelectedColorId] = useState(0);
   const [selectedName, setSelectedName] = useState('');
 
-  const addGood = (newGood: FullGood) => {
+  const addGood = (colorId: number, name: string) => {
+    const newGood = {
+      id: Date.now(),
+      colorId,
+      name,
+      color: getColors(colorId),
+    };
+
     setGoods((currentGoods) => ([...currentGoods, newGood]));
+  };
+
+  const resetForm = () => {
+    setSelectedColorId(0);
+    setSelectedName('');
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    addGood(selectedColorId, selectedName);
+
+    resetForm();
   };
 
   return (
     <>
-      <form>
+      <form onSubmit={e => handleSubmit(e)}>
         <input
           type="text"
           placeholder="Enter name"
