@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Color, FullGood, GoodWithoutColor } from './types';
 
 const colors: Color[] = [
@@ -31,12 +31,36 @@ const preparedGoods: FullGood[] = goodsFromServer.map(good => ({
 
 export const App: FC = React.memo(() => {
   const [goods, setGoods] = useState(preparedGoods);
+  const [selectedColorId, setSelectedColorId] = useState(0);
+  const [selectedName, setSelectedName] = useState('');
+
+  const addGood = (newGood: FullGood) => {
+    setGoods((currentGoods) => ([...currentGoods, newGood]));
+  };
 
   return (
     <>
+      <form>
+        <input
+          type="text"
+          placeholder="Enter name"
+          value={selectedName}
+          onChange={e => setSelectedName(e.target.value)}
+        />
+        <select
+          onChange={e => setSelectedColorId(+e.target.value)}
+          value={selectedColorId}
+        >
+          <option value="0" disabled selected>Select color</option>
+          {colors.map(({ id, name }) => (
+            <option value={id}>{name}</option>
+          ))}
+        </select>
+        <button type="submit">Add good</button>
+      </form>
       <ul>
         {goods.map(good => (
-          <li style={{ color: good.color?.name }}>
+          <li key={good.id} style={{ color: good.color?.name }}>
             {good.name}
           </li>
         ))}
