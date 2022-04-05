@@ -1,37 +1,37 @@
-import './App.scss';
-import {
-  FullOrder, Order, Product, User,
-} from './types';
+import React, { FC } from 'react';
 
-import usersFromServer from './api/users.json';
-import productsFromServer from './api/products.json';
-import ordersFromServer from './api/orders.json';
-import { Card } from './components/Card/Card';
-
-function prepareOrders(
-  orders: Order[],
-  users: User[],
-  products: Product[],
-): FullOrder[] {
-  return orders.map((order) => ({
-    ...order,
-    user: users.find(user => user.id === order.userId),
-    products: products.filter(product => product.orderId === order.id),
-  }));
+interface Color {
+  id: number;
+  name: string;
 }
 
-const preparedOrders = prepareOrders(ordersFromServer, usersFromServer, productsFromServer);
+interface GoodWithoutColor {
+  id: number;
+  name: string;
+  colorId: number;
+}
 
-function App() {
+const colors: Color[] = [
+  { id: 1, name: 'red' },
+  { id: 2, name: 'green' },
+  { id: 3, name: 'blue' },
+];
+
+const goodsFromServer: GoodWithoutColor[] = [
+  { id: 1, colorId: 1, name: 'Dumplings' },
+  { id: 2, colorId: 2, name: 'Carrot' },
+  { id: 3, colorId: 3, name: 'Eggs' },
+  { id: 4, colorId: 1, name: 'Ice cream' },
+  { id: 5, colorId: 2, name: 'Apple' },
+  { id: 6, colorId: 3, name: 'Bread' },
+  { id: 7, colorId: 1, name: 'Fish' },
+  { id: 8, colorId: 2, name: 'Honey' },
+  { id: 9, colorId: 3, name: 'Jam' },
+  { id: 10, colorId: 1, name: 'Garlic' },
+];
+
+export const App: FC = React.memo(() => {
   return (
-    <div className="container">
-
-      {preparedOrders.map((order) => (
-        <Card order={order} key={order.id} />
-      ))}
-
-    </div>
+    <h1>App</h1>
   );
-}
-
-export default App;
+});
