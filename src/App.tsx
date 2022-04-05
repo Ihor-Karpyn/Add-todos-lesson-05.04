@@ -1,15 +1,5 @@
-import React, { FC } from 'react';
-
-interface Color {
-  id: number;
-  name: string;
-}
-
-interface GoodWithoutColor {
-  id: number;
-  name: string;
-  colorId: number;
-}
+import React, { FC, useState } from 'react';
+import { Color, FullGood, GoodWithoutColor } from './types';
 
 const colors: Color[] = [
   { id: 1, name: 'red' },
@@ -30,8 +20,27 @@ const goodsFromServer: GoodWithoutColor[] = [
   { id: 10, colorId: 1, name: 'Garlic' },
 ];
 
+const getColors = (colorId: number) => (
+  colors.find(color => color.id === colorId)
+);
+
+const preparedGoods: FullGood[] = goodsFromServer.map(good => ({
+  ...good,
+  color: getColors(good.colorId),
+}));
+
 export const App: FC = React.memo(() => {
+  const [goods, setGoods] = useState(preparedGoods);
+
   return (
-    <h1>App</h1>
+    <>
+      <ul>
+        {goods.map(good => (
+          <li style={{ color: good.color?.name }}>
+            {good.name}
+          </li>
+        ))}
+      </ul>
+    </>
   );
 });
