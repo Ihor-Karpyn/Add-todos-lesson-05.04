@@ -1,6 +1,8 @@
 import React, { FC, useState } from 'react';
 import { Color, FullGood, GoodWithoutColor } from './types';
 import './App.css';
+import { GoodsList } from './GoodsList';
+import { AddGoodForm } from './AddGoodForm';
 
 const colors: Color[] = [
   { id: 1, name: 'red' },
@@ -32,10 +34,6 @@ const preparedGoods: FullGood[] = goodsFromServer.map(good => ({
 
 export const App: FC = React.memo(() => {
   const [goods, setGoods] = useState(preparedGoods);
-  const [selectedColorId, setSelectedColorId] = useState(0);
-  const [selectedName, setSelectedName] = useState('');
-  const [hasNameError, setHasNameError] = useState(false);
-  const [hasColorError, setHasColorError] = useState(false);
 
   const addGood = (colorId: number, name: string) => {
     const newGood = {
@@ -48,77 +46,10 @@ export const App: FC = React.memo(() => {
     setGoods((currentGoods) => ([...currentGoods, newGood]));
   };
 
-  const resetForm = () => {
-    setSelectedColorId(0);
-    setSelectedName('');
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    setHasNameError(!selectedName);
-    setHasColorError(!selectedColorId);
-
-    if (!selectedName || !selectedColorId) {
-      return;
-    }
-
-    addGood(selectedColorId, selectedName);
-
-    resetForm();
-  };
-
-  const changeNameHandler = (value: string) => {
-    const s = value[value.length - 1];
-
-    if (!Number.isNaN(parseFloat(s))) {
-      return;
-    }
-
-    setSelectedName(value);
-    setHasNameError(false);
-  };
-
   return (
     <>
-      <form onSubmit={e => handleSubmit(e)}>
-        <div className="wrapper">
-          <input
-            type="text"
-            placeholder="Enter name"
-            value={selectedName}
-            onChange={e => changeNameHandler(e.target.value)}
-          />
-          {hasNameError && (
-            <span className="error">Add name</span>
-          )}
-        </div>
-        <div className="wrapper">
-          <select
-            onChange={e => {
-              setSelectedColorId(+e.target.value);
-              setHasColorError(false);
-            }}
-            value={selectedColorId}
-          >
-            <option value="0" disabled selected>Select color</option>
-            {colors.map(({ id, name }) => (
-              <option key={id} value={id}>{name}</option>
-            ))}
-          </select>
-          {hasColorError && (
-            <span className="error">Select color</span>
-          )}
-        </div>
-        <button type="submit">Add good</button>
-      </form>
-      <ul>
-        {goods.map(good => (
-          <li key={good.id} style={{ color: good.color?.name }}>
-            {good.name}
-          </li>
-        ))}
-      </ul>
+      <AddGoodForm colors={colors} onAdd={addGood} />
+      <GoodsList goods={goods} />
     </>
   );
 });
