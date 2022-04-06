@@ -46,10 +46,43 @@ export const App: FC = React.memo(() => {
     setGoods((currentGoods) => ([...currentGoods, newGood]));
   };
 
+  const removeGood = (goodId: number) => {
+    setGoods(prev => prev.filter(good => good.id !== goodId));
+  };
+
+  const editGood = (goodId: number, name: string, colorId: number) => {
+    console.log(colorId);
+
+    setGoods(prev => {
+      const findedGood = prev.find(good => good.id === goodId);
+
+      console.log({ findedGood });
+
+      if (!findedGood) {
+        return prev;
+      }
+
+      const index = prev.findIndex(good => good.id === goodId);
+      const editedGood = {
+        ...findedGood,
+        color: getColors(colorId),
+        name,
+        colorId,
+      };
+      const res = [...prev];
+
+      res[index] = editedGood;
+
+      console.log({ editedGood });
+
+      return res;
+    });
+  };
+
   return (
     <>
       <AddGoodForm colors={colors} onAdd={addGood} />
-      <GoodsList goods={goods} />
+      <GoodsList goods={goods} onRemove={removeGood} onEdit={editGood} colors={colors} />
     </>
   );
 });
